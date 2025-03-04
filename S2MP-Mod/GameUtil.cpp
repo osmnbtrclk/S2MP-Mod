@@ -1,37 +1,22 @@
 #include "pch.h"
 #include "GameUtil.h"
 #include "FuncPointers.h"
+#include "Console.h"
+typedef unsigned int    uint32;
+#define _DWORD uint32
 
-void GameUtil::Cbuf_AddText(LocalClientNum_t localClientNum, const char* text) {
+void GameUtil::Cbuf_AddText(LocalClientNum_t localClientNum, std::string text) {
+    Console::print("GameUtil::Cbuf_AddText(" + std::to_string(localClientNum) + ", " + text + ")");
     uintptr_t base = (uintptr_t)GetModuleHandle(NULL);
-    uintptr_t cmd_textArrayAddr = base + 0xAC664B8;
+    uintptr_t cmd_textArrayAddr = base + 0xAC674B8; //adjusted for 0x1000 offset
 
-    Functions::_Sys_EnterCriticalSection(0);
-    if (((*text - 80) & 0xDF) == 0 && text[1] == 48) {
-        text += 2;
-        //skips leading spaces
-        for (localClientNum = LOCAL_CLIENT_0; *text == 32; ++text)
-            ;
-    }
-    int v4 = 0;
-    CmdText* cmd_textArray = reinterpret_cast<CmdText*>(cmd_textArrayAddr);
-    CmdText* v5 = &cmd_textArray[localClientNum];
-    for (const char* i = text; *i; ++v4)
-        ++i;
-    __int64 cmdsize = v5->cmdsize;
-    if ((int)cmdsize + v4 < v5->maxsize) {
-        unsigned __int8* v8 = &v5->data[cmdsize];
-        __int64 v9 = v4 + 1;
-        if (v4 != -1) {
-            do {
-                char v10 = *text;
-                ++v8;
-                ++text;
-                *(v8 - 1) = v10;
-                --v9;
-            } while (v9);
-        }
-        v5->cmdsize += v4;
-    }
-    Functions::_Sys_LeaveCriticalSection(0);
+    //Functions::_Sys_EnterCriticalSection(193);
+    //v2 = &(&cmd_textArray)[2 * v1];
+    //v3 = *((int*)v2 + 3);
+    //if ((int)v3 + 20 < *((_DWORD*)v2 + 2))
+    //{
+    //    strcpy(&(*v2)[v3], "exec default_mp.cfg\n");
+    //    *((_DWORD*)v2 + 3) += 20;
+    //}
+    //Functions::_Sys_LeaveCriticalSection(193);
 }

@@ -25,9 +25,9 @@ void ExternalConsoleGuiInitWrapper() {
 //__declspec(dllexport)
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpvReserved) {
 	hm = hModule;
-	if (dwReason == DLL_PROCESS_ATTACH)
-	{
+	if (dwReason == DLL_PROCESS_ATTACH) {
 		if (checkIfSteamVersion()) {
+			
 			//CreateThread(0, 0, t6Cin, 0, 0, 0);
 			if (EXTERNAL_CONSOLE_MODE == 0 || EXTERNAL_CONSOLE_MODE == 2) {
 				AllocConsole();

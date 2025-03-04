@@ -11,6 +11,7 @@
 #include "Console.h"
 #include <thread>
 #include "FuncPointers.h"
+#include "DevPatches.hpp"
 
 HANDLE hProcess;
 HINSTANCE hInst;
@@ -43,6 +44,19 @@ void ExtConsole::consoleMainLoop() {
 	}
 }
 
+void infoPrintOffsets() {
+	uintptr_t s2base = (uintptr_t)GetModuleHandle(NULL);
+	uintptr_t s2baseOff = (uintptr_t)GetModuleHandle(NULL) + 0x1000;
+	std::ostringstream oss;
+	oss << "0x" << std::hex << s2base;
+	std::string addressStr = oss.str();
+	std::ostringstream oss2;
+	oss2 << "0x" << std::hex << s2baseOff;
+	std::string addressStr2 = oss2.str();
+	Console::infoPrint("s2_mp64_ship Base at: " + addressStr);
+	Console::infoPrint("s2_mp64_ship BaseOff at: " + addressStr2);
+}
+
 
 //0 - CLI, 1 - GUI, 2 - BOTH
 void ExtConsole::extConInit(int extConsoleMode) {
@@ -53,7 +67,7 @@ void ExtConsole::extConInit(int extConsoleMode) {
 	//Console::execCmd("disconnect");
 
 	if (extConsoleMode >= 1) {
-		//Wait for external console gui to be fully ready
+		//wait for external console gui to be fully ready
 		while (!ExternalConsoleGui::isExtConGuiReady()) {
 			std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		}
@@ -68,12 +82,21 @@ void ExtConsole::extConInit(int extConsoleMode) {
 		std::cout << "extConsoleMode:" << extConsoleMode << "; CLI will be used" << std::endl;
 	}
 
-	uintptr_t t9base = (uintptr_t)GetModuleHandle(NULL);
-	std::ostringstream oss;
-	oss << "0x" << std::hex << t9base;
-	std::string addressStr = oss.str();
-	Console::infoPrint("s2_mp64_ship Base at: " + addressStr);
-	//Console::print("Sys_Cwd(): " + std::string(Functions::_Sys_Cwd()));
+	infoPrintOffsets();
+	Console::print("Sys_Cwd(): " + std::string(Functions::_Sys_Cwd()));
+
+
+	//MH_STATUS status = MH_Initialize();
+	//if (status != MH_OK) {
+	//	std::string sStatus = MH_StatusToString(status);
+	//	Console::print("Minhook init failed");
+	//}
+	//else {
+	//	Console::print("Minhook init");
+	//}
+	DevPatches::init();
+
+
 	if (extConsoleMode == 0 || extConsoleMode == 2) {
 		consoleMainLoop();
 	}

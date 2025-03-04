@@ -142,11 +142,16 @@
   <ItemGroup>
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Console.h" />
+    <ClInclude Include="CustomCommands.hpp" />
+    <ClInclude Include="DevPatches.hpp" />
+    <ClInclude Include="DvarInterface.hpp" />
     <ClInclude Include="ExtConsole.h" />
     <ClInclude Include="ExtConsoleGui.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FuncPointers.h" />
     <ClInclude Include="GameUtil.h" />
+    <ClInclude Include="Hook.hpp" />
+    <ClInclude Include="Noclip.hpp" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="structs.h" />
@@ -154,17 +159,22 @@
   <ItemGroup>
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="CustomCommands.cpp" />
+    <ClCompile Include="DevPatches.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="DvarInterface.cpp" />
     <ClCompile Include="ExtConsole.cpp" />
     <ClCompile Include="ExtConsoleGui.cpp" />
     <ClCompile Include="FuncPointers.cpp" />
     <ClCompile Include="GameUtil.cpp" />
+    <ClCompile Include="Hook.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Noclip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="s2mp_con.bmp" />

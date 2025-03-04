@@ -9,8 +9,11 @@
 #include <array>
 #include "FuncPointers.h"
 //#include "Hook.h"
-//#include "Structs.h"
+#include "structs.h"
 #include <regex>
+#include "GameUtil.h"
+#include "Noclip.hpp"
+#include "CustomCommands.hpp"
 
 uintptr_t t9base = (uintptr_t)GetModuleHandle(NULL);
 
@@ -92,10 +95,10 @@ bool execCustomCmd(std::string& cmd) {
 	if (p.size() < 1) {
 		return false;
 	}
-	std::string prefix = "hash";
+	std::string prefix = "trans";
 	if (p[0] == prefix) {
 		if (p.size() == 2) {
-			Console::print(p[1] + ": 0x" + toHex(hash32(p[1].c_str())));
+			Console::print("Translated String: " + std::string(Functions::_SEH_SafeTranslateString(p[1].c_str())));
 		}
 		return true;
 	}
@@ -107,11 +110,28 @@ bool execCustomCmd(std::string& cmd) {
 		return true;
 	}
 
+	if (p[0] == "noclip") {
+		Noclip::toggle();
+		return true;
+	}
+
+	if (p[0] == "god") {
+		CustomCommands::toggleGodmode();
+		return true;
+	}
+
 	return false;
 }
 
 void Console::execCmd(std::string cmd) {
 	if (!execCustomCmd(cmd)) {
-		Functions::_Cbuf_AddText(0, (char*)cmd.c_str());
+		//GameUtil::Cbuf_AddText(LOCAL_CLIENT_0, (char*)cmd.c_str());
 	}
+
+
+	//std::vector<std::string> p = Console::parseCmdToVec(cmd);
+	//if (p.size() == 0) {
+	//	return;
+	//}
+
 }
