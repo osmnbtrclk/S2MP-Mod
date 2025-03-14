@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <string>
 #include <sstream>
-//#include "Hook.h"
+#include <MinHook.h>
 #include <array>
 #include "ExtConsole.h"
 #include <signal.h>
@@ -12,14 +12,13 @@
 #include <thread>
 #include "FuncPointers.h"
 #include "DevPatches.hpp"
+#include "PrintPatches.hpp"
+#include "DebugPatches.hpp"
+
+#pragma comment(lib, "libMinHook.x64.lib")
 
 HANDLE hProcess;
 HINSTANCE hInst;
-
-
-
-
-
 
 //these prints will be for external console only
 void ExtConsole::coutInit(const std::string& s) {
@@ -58,6 +57,8 @@ void infoPrintOffsets() {
 }
 
 
+
+
 //0 - CLI, 1 - GUI, 2 - BOTH
 void ExtConsole::extConInit(int extConsoleMode) {
 	hProcess = GetCurrentProcess();
@@ -86,16 +87,19 @@ void ExtConsole::extConInit(int extConsoleMode) {
 	Console::print("Sys_Cwd(): " + std::string(Functions::_Sys_Cwd()));
 
 
-	//MH_STATUS status = MH_Initialize();
-	//if (status != MH_OK) {
-	//	std::string sStatus = MH_StatusToString(status);
-	//	Console::print("Minhook init failed");
-	//}
-	//else {
-	//	Console::print("Minhook init");
-	//}
-	DevPatches::init();
+	MH_STATUS status = MH_Initialize();
+	if (status != MH_OK) {
+		std::string sStatus = MH_StatusToString(status);
+		Console::print("Minhook init failed");
+		//TODO:Add some like error handling here or a global var
+	}
+	else {
+		//Console::print("Minhook init");
+	}
 
+	//DebugPatches::init();
+	//PrintPatches::init();
+	DevPatches::init();
 
 	if (extConsoleMode == 0 || extConsoleMode == 2) {
 		consoleMainLoop();

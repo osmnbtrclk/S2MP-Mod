@@ -2,6 +2,12 @@
 #include "structs.h"
 class Functions {
 public:
+	typedef void(__cdecl* Com_Error)(errorParm_t code, const char* fmt, ...);
+	static Com_Error _Com_Error;
+	
+	typedef void(__cdecl* Scr_MakeGameMessage)(const char *msg);
+	static Scr_MakeGameMessage _Scr_MakeGameMessage;
+
 	typedef void(__cdecl* Sys_EnterCriticalSection)(int critSect);
 	static Sys_EnterCriticalSection _Sys_EnterCriticalSection;
 	
@@ -19,5 +25,8 @@ public:
 	
 	typedef char* (__cdecl* SEH_StringEd_GetString)(const char* pszReference);
 	static SEH_StringEd_GetString _SEH_StringEd_GetString;
+	
+	typedef void (__cdecl* Sys_Quit)();
+	static Sys_Quit _Sys_Quit;
 	
 };

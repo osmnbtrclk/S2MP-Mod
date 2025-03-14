@@ -8,10 +8,10 @@
 #include <sstream>
 #include <array>
 #include "FuncPointers.h"
-//#include "Hook.h"
+
 #include "structs.h"
 #include <regex>
-#include "GameUtil.h"
+#include "GameUtil.hpp"
 #include "Noclip.hpp"
 #include "CustomCommands.hpp"
 
@@ -91,21 +91,14 @@ std::string toHex(uint32_t value) {
 }
 
 bool execCustomCmd(std::string& cmd) {
+	std::transform(cmd.begin(), cmd.end(), cmd.begin(), GameUtil::asciiToLower);
 	std::vector<std::string> p = Console::parseCmdToVec(cmd);
 	if (p.size() < 1) {
 		return false;
 	}
-	std::string prefix = "trans";
-	if (p[0] == prefix) {
+	if (p[0] == "trans") {
 		if (p.size() == 2) {
 			Console::print("Translated String: " + std::string(Functions::_SEH_SafeTranslateString(p[1].c_str())));
-		}
-		return true;
-	}
-	prefix = "sam";
-	if (p[0] == prefix) {
-		if (p.size() == 2) {
-			//Functions::_SetScreen(atoi(p[1].c_str()));
 		}
 		return true;
 	}
@@ -118,6 +111,29 @@ bool execCustomCmd(std::string& cmd) {
 	if (p[0] == "god") {
 		CustomCommands::toggleGodmode();
 		return true;
+	}
+	
+	if (p[0] == "quit") {
+		Functions::_Sys_Quit();
+		return true;
+	}
+
+	if (p[0] == "cg_drawlui") {
+		if (p.size() >= 2) {
+			CustomCommands::toggleHud(GameUtil::stringToBool(p[1]));
+		}
+	}
+	
+	if (p[0] == "r_fog") {
+		if (p.size() >= 2) {
+			CustomCommands::toggleFog(GameUtil::stringToBool(p[1]));
+		}
+	}
+	
+	if (p[0] == "cg_drawgun") {
+		if (p.size() >= 2) {
+			CustomCommands::toggleGun(GameUtil::stringToBool(p[1]));
+		}
 	}
 
 	return false;

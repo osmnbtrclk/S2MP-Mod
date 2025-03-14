@@ -38,5 +38,5 @@ bool DvarInterface::hasEngineString(const std::string& engineString) {
 void DvarInterface::init() {
     Console::infoPrint("Initializing Dvar Interface");
     //only gonna put ones that are actually used
-
+    addMapping("r_disable_clutter", "1841");
 }

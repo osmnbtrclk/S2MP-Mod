@@ -20,3 +20,46 @@ void CustomCommands::toggleGodmode() {
 	}
 	CustomCommands::isGodmode = !CustomCommands::isGodmode;
 }
+
+void CustomCommands::testPrint() {
+	//Functions::_Scr_MakeGameMessage("Test Game Message");
+	Functions::_Com_Error(ERR_DROP, "1125");
+}
+
+//cg_drawlui
+void CustomCommands::toggleHud(bool b) {
+	constexpr std::array<unsigned char, 5> DISABLE_HUD_PATCH_BYTES = { 0x90, 0x90, 0x90, 0x90, 0x90 }; //patch
+	constexpr std::array<unsigned char, 5> ENABLE_HUD_PATCH_BYTES = { 0xE8, 0x66, 0xE8, 0xFF, 0xFF }; //original
+	HANDLE pHandle = GetCurrentProcess();
+	if (b) {
+		WriteProcessMemory(pHandle, (LPVOID)(base + 0x960205), ENABLE_HUD_PATCH_BYTES.data(), ENABLE_HUD_PATCH_BYTES.size(), nullptr);
+	}
+	else {
+		WriteProcessMemory(pHandle, (LPVOID)(base + 0x960205), DISABLE_HUD_PATCH_BYTES.data(), DISABLE_HUD_PATCH_BYTES.size(), nullptr);
+	}
+}
+
+//cg_drawGun
+void CustomCommands::toggleGun(bool b) {
+	constexpr std::array<unsigned char, 5> DISABLE_GUNDRAW_PATCH_BYTES = { 0x90, 0x90, 0x90, 0x90, 0x90 }; //patch
+	constexpr std::array<unsigned char, 5> ENABLE_GUNDRAW_PATCH_BYTES = { 0xE8, 0x97, 0x15, 0x0D, 0x00 }; //original
+	HANDLE pHandle = GetCurrentProcess();
+	if (b) {
+		WriteProcessMemory(pHandle, (LPVOID)(base + 0x7A774), ENABLE_GUNDRAW_PATCH_BYTES.data(), ENABLE_GUNDRAW_PATCH_BYTES.size(), nullptr);
+	}
+	else {
+		WriteProcessMemory(pHandle, (LPVOID)(base + 0x7A774), DISABLE_GUNDRAW_PATCH_BYTES.data(), DISABLE_GUNDRAW_PATCH_BYTES.size(), nullptr);
+	}
+}
+
+void CustomCommands::toggleFog(bool b) {
+	constexpr std::array<unsigned char, 5> DISABLE_FOG_PATCH_BYTES = { 0x90, 0x90, 0x90, 0x90, 0x90 }; //patch
+	constexpr std::array<unsigned char, 5> ENABLE_FOG_PATCH_BYTES = { 0xE8, 0x02, 0x4B, 0x46, 0x00 }; //original
+	HANDLE pHandle = GetCurrentProcess();
+	if (b) {
+		WriteProcessMemory(pHandle, (LPVOID)(base + 0x47B19), ENABLE_FOG_PATCH_BYTES.data(), ENABLE_FOG_PATCH_BYTES.size(), nullptr);
+	}
+	else {
+		WriteProcessMemory(pHandle, (LPVOID)(base + 0x47B19), DISABLE_FOG_PATCH_BYTES.data(), DISABLE_FOG_PATCH_BYTES.size(), nullptr);
+	}
+}

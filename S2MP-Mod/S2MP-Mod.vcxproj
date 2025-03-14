@@ -70,6 +70,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ExternalIncludePath>$(SolutionDir)include;$(ExternalIncludePath)</ExternalIncludePath>
+    <LibraryPath>$(SolutionDir)lib\$(Configuration);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -143,16 +147,19 @@
     <ClInclude Include="ConfigManager.h" />
     <ClInclude Include="Console.h" />
     <ClInclude Include="CustomCommands.hpp" />
+    <ClInclude Include="D3D.hpp" />
+    <ClInclude Include="DebugPatches.hpp" />
     <ClInclude Include="DevPatches.hpp" />
     <ClInclude Include="DvarInterface.hpp" />
     <ClInclude Include="ExtConsole.h" />
     <ClInclude Include="ExtConsoleGui.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FuncPointers.h" />
-    <ClInclude Include="GameUtil.h" />
+    <ClInclude Include="GameUtil.hpp" />
     <ClInclude Include="Hook.hpp" />
     <ClInclude Include="Noclip.hpp" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="PrintPatches.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="structs.h" />
   </ItemGroup>
@@ -160,6 +167,8 @@
     <ClCompile Include="ConfigManager.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="CustomCommands.cpp" />
+    <ClCompile Include="D3D.cpp" />
+    <ClCompile Include="DebugPatches.cpp" />
     <ClCompile Include="DevPatches.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="DvarInterface.cpp" />
@@ -175,6 +184,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Noclip.cpp" />
+    <ClCompile Include="PrintPatches.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="s2mp_con.bmp" />

@@ -1,7 +1,9 @@
 #include "pch.h"
-#include "GameUtil.h"
+#include "GameUtil.hpp"
 #include "FuncPointers.h"
 #include "Console.h"
+#include <sstream>
+#include <algorithm>
 typedef unsigned int    uint32;
 #define _DWORD uint32
 
@@ -19,4 +21,23 @@ void GameUtil::Cbuf_AddText(LocalClientNum_t localClientNum, std::string text) {
     //    *((_DWORD*)v2 + 3) += 20;
     //}
     //Functions::_Sys_LeaveCriticalSection(193);
+}
+
+std::string GameUtil::getAddressAsString(void* address) {
+    std::stringstream ss;
+    ss << address;
+    return ss.str();
+}
+
+char GameUtil::asciiToLower(char in) {
+    if (in <= 'Z' && in >= 'A')
+        return in - ('Z' - 'z');
+    return in;
+}
+
+bool GameUtil::stringToBool(const std::string& str) {
+    std::string lowerStr = str;
+    std::transform(lowerStr.begin(), lowerStr.end(), lowerStr.begin(), GameUtil::asciiToLower);
+
+    return (lowerStr == "1" || lowerStr == "true");
 }

@@ -60,7 +60,7 @@
     <ClInclude Include="structs.h">
       <Filter>Source Files\Common</Filter>
     </ClInclude>
-    <ClInclude Include="GameUtil.h">
+    <ClInclude Include="GameUtil.hpp">
       <Filter>Source Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="DvarInterface.hpp">
@@ -77,6 +77,15 @@
     </ClInclude>
     <ClInclude Include="CustomCommands.hpp">
       <Filter>Source Files\Console</Filter>
+    </ClInclude>
+    <ClInclude Include="PrintPatches.hpp">
+      <Filter>Source Files\Code</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugPatches.hpp">
+      <Filter>Source Files\Code</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D.hpp">
+      <Filter>Source Files\Code</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +127,15 @@
     </ClCompile>
     <ClCompile Include="CustomCommands.cpp">
       <Filter>Source Files\Console</Filter>
+    </ClCompile>
+    <ClCompile Include="PrintPatches.cpp">
+      <Filter>Source Files\Code</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugPatches.cpp">
+      <Filter>Source Files\Code</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D.cpp">
+      <Filter>Source Files\Code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,18 @@ enum LocalClientNum_t : __int32
     LOCAL_CLIENT_COUNT = 0x1,
 };
 
+enum errorParm_t
+{
+    ERR_FATAL = 0x0,
+    ERR_DROP = 0x1,
+    ERR_SERVERDISCONNECT = 0x2,
+    ERR_DISCONNECT = 0x3,
+    ERR_SCRIPT = 0x4,
+    ERR_SCRIPT_DROP = 0x5,
+    ERR_LOCALIZATION = 0x6,
+    ERR_MAPLOADERRORSUMMARY = 0x7,
+};
+
 struct DvarLimits_integer
 {
     int min;
