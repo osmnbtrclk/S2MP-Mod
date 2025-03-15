@@ -61,19 +61,10 @@ union DvarValue
     unsigned __int8 color[4];
 };
 
-//from iw6, double check for s2
-struct dvar_t
-{
-    const char* name;
-    unsigned int flags;
-    unsigned __int8 type;
-    bool modified;
+struct dvar_t {
+    char* name;
+    char padding[8]; //8 bytes of stuff i dont care about
     DvarValue current;
-    DvarValue latched;
-    DvarValue reset;
-    DvarLimits domain;
-    bool(__fastcall* domainFunc)(dvar_t*, DvarValue);
-    dvar_t* hashNext;
 };
 
 //making this from scratch

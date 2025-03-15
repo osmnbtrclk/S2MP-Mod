@@ -39,4 +39,17 @@ void DvarInterface::init() {
     Console::infoPrint("Initializing Dvar Interface");
     //only gonna put ones that are actually used
     addMapping("r_disable_clutter", "1841");
+    addMapping("r_texFilterDisable", "91");
+    addMapping("r_texFilterMipMode", "4107");
+    addMapping("r_texShowMipMode", "2416");
+    addMapping("r_texFilterMipBias", "3569");
+    addMapping("r_texFilterProbeBilinear", "5634");
+    addMapping("r_lodDynamicScale", "1111");
+    addMapping("r_artUseTweaks", "5690");
+    addMapping("r_lightGridTempSmoothingFactor", "2677");
+    addMapping("r_globalSecondarySelfVisScale", "1264");
+    addMapping("r_globalSecondarySelfVisLerpToFullyOpen", "5139");
+    addMapping("r_lightMap", "3271");
+    addMapping("r_colorMap", "3391");
+    addMapping("r_detailMap", "2194");
 }
