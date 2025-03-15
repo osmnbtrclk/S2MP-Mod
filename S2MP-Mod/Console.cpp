@@ -138,6 +138,9 @@ bool setEngineDvar(std::string cmd) {
 }
 
 void Console::execCmd(std::string cmd) {
+	if (cmd.length() == 0) {
+		return;
+	}
 	if (!execCustomCmd(cmd) && !setEngineDvar(cmd)) {
 		//GameUtil::Cbuf_AddText(LOCAL_CLIENT_0, (char*)cmd.c_str());
 	}

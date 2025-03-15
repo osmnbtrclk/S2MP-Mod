@@ -90,7 +90,7 @@ void DvarInterface::init() {
     addMapping("r_texFilterMipBias", "3569");
     addMapping("r_texFilterProbeBilinear", "5634");
     addMapping("r_lodDynamicScale", "1111");
-    addMapping("r_artUseTweaks", "5690");
+    addMapping("r_artUseTweaks", "5960");
     addMapping("r_lightGridTempSmoothingFactor", "2677");
     addMapping("r_globalSecondarySelfVisScale", "1264");
     addMapping("r_globalSecondarySelfVisLerpToFullyOpen", "5139");
@@ -101,7 +101,7 @@ void DvarInterface::init() {
     addMapping("r_normalMap", "5467");
     addMapping("r_specularMap", "2427");
     addMapping("r_specOccMap", "5620");
-    addMapping("r_envBrdLutMap", "3818");
+    addMapping("r_envBrdfLutMap", "3818");
     addMapping("r_emissiveMap", "769");
     addMapping("r_depthPrepass", "4600");
     addMapping("r_depthHackPrepass", "1342");
