@@ -145,10 +145,4 @@ void Console::execCmd(std::string cmd) {
 		//GameUtil::Cbuf_AddText(LOCAL_CLIENT_0, (char*)cmd.c_str());
 	}
 
-
-	//std::vector<std::string> p = Console::parseCmdToVec(cmd);
-	//if (p.size() == 0) {
-	//	return;
-	//}
-
 }
