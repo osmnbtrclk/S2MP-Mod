@@ -14,6 +14,7 @@
 #include "GameUtil.hpp"
 #include "Noclip.hpp"
 #include "CustomCommands.hpp"
+#include "DvarInterface.hpp"
 
 uintptr_t t9base = (uintptr_t)GetModuleHandle(NULL);
 
@@ -72,17 +73,6 @@ std::vector<std::string> Console::parseCmdToVec(const std::string& cmd) {
 	return components;
 }
 
-constexpr uint32_t hash32(const char* str) {
-	uint32_t hash = 0x4B9ACE2F;
-
-	for (const char* data = str; *data; data++) {
-		char c = *data >= 'A' && *data <= 'Z' ? (*data - 'A' + 'a') : *data;
-		hash = ((c + hash) ^ ((c + hash) << 10)) + (((c + hash) ^ ((c + hash) << 10)) >> 6);
-	}
-
-	return 0x8001 * ((9 * hash) ^ ((9 * hash) >> 11));
-}
-
 //move to gameutil
 std::string toHex(uint32_t value) {
 	std::stringstream ss;
@@ -93,6 +83,7 @@ std::string toHex(uint32_t value) {
 bool execCustomCmd(std::string& cmd) {
 	std::transform(cmd.begin(), cmd.end(), cmd.begin(), GameUtil::asciiToLower);
 	std::vector<std::string> p = Console::parseCmdToVec(cmd);
+
 	if (p.size() < 1) {
 		return false;
 	}
@@ -139,8 +130,15 @@ bool execCustomCmd(std::string& cmd) {
 	return false;
 }
 
+bool setEngineDvar(std::string cmd) {
+	std::transform(cmd.begin(), cmd.end(), cmd.begin(), GameUtil::asciiToLower);
+	std::vector<std::string> p = Console::parseCmdToVec(cmd);
+
+	return DvarInterface::setDvar(p[0], p);
+}
+
 void Console::execCmd(std::string cmd) {
-	if (!execCustomCmd(cmd)) {
+	if (!execCustomCmd(cmd) && !setEngineDvar(cmd)) {
 		//GameUtil::Cbuf_AddText(LOCAL_CLIENT_0, (char*)cmd.c_str());
 	}
 

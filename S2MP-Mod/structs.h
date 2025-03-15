@@ -45,9 +45,21 @@ union DvarLimits
 };
 
 
-enum dvarType_t
+enum dvarType_t : __int32
 {
-    DVAR_TYPE_FLOAT = 0xB,
+    DVAR_TYPE_BOOL = 0x0,
+    DVAR_TYPE_FLOAT = 0x1,
+    DVAR_TYPE_FLOAT_2 = 0x2,
+    DVAR_TYPE_FLOAT_3 = 0x3,
+    DVAR_TYPE_FLOAT_4 = 0x4,
+    DVAR_TYPE_INT = 0x5,
+    DVAR_TYPE_ENUM = 0x6,
+    DVAR_TYPE_STRING = 0x7,
+    DVAR_TYPE_COLOR = 0x8,
+    DVAR_TYPE_INT64 = 0x9,
+    DVAR_TYPE_LINEAR_COLOR_RGB = 0xA,
+    DVAR_TYPE_COLOR_XYZ = 0xB,
+    DVAR_TYPE_COUNT = 0xC,
 };
 
 union DvarValue
@@ -63,8 +75,10 @@ union DvarValue
 
 struct dvar_t {
     char* name;
-    char padding[8]; //8 bytes of stuff i dont care about
+    int flags;
+    dvarType_t type;
     DvarValue current;
+    //more stuff
 };
 
 //making this from scratch

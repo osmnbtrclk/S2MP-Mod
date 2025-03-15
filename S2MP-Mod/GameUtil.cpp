@@ -23,6 +23,34 @@ void GameUtil::Cbuf_AddText(LocalClientNum_t localClientNum, std::string text) {
     //Functions::_Sys_LeaveCriticalSection(193);
 }
 
+float GameUtil::safeStringToFloat(const std::string& str) {
+    try {
+        size_t pos;
+        float result = std::stof(str, &pos);
+        if (pos != str.length()) {
+            return 0.0f;
+        }
+        return result;
+    }
+    catch (const std::exception&) {
+        return 0.0f;
+    }
+}
+
+int GameUtil::safeStringToInt(const std::string& str) {
+    try {
+        size_t pos;
+        int result = std::stoi(str, &pos);
+        if (pos != str.length()) {
+            return 0;
+        }
+        return result;
+    }
+    catch (const std::exception&) {
+        return 0;
+    }
+}
+
 std::string GameUtil::getAddressAsString(void* address) {
     std::stringstream ss;
     ss << address;

@@ -1,19 +1,72 @@
 #include "pch.h"
 #include "DvarInterface.hpp"
 #include "Console.h"
+#include "GameUtil.hpp"
+#include "FuncPointers.h"
+#include <algorithm>
 
 std::unordered_map<std::string, std::string> DvarInterface::userToEngineMap;
 std::unordered_map<std::string, std::string> DvarInterface::engineToUserMap;
 
+//dvar name and exploded cmd
+bool DvarInterface::setDvar(std::string& dvarname, std::vector<std::string> cmd) {
+    std::string dvarLower = dvarname;
+    std::transform(dvarLower.begin(), dvarLower.end(), dvarLower.begin(), GameUtil::asciiToLower);
+
+    dvar_t* var = Functions::_Dvar_FindVar(DvarInterface::toEngineString(dvarLower).c_str());
+    if (var != nullptr) {
+        switch (var->type) {
+        case DVAR_TYPE_BOOL:
+            if (cmd.size() >= 2) {
+                var->current.enabled = GameUtil::stringToBool(cmd[1]);
+            }
+            break;
+        case DVAR_TYPE_FLOAT:
+            if (cmd.size() >= 2) {
+                var->current.value = GameUtil::safeStringToFloat(cmd[1]);
+            }
+            break;
+        case DVAR_TYPE_INT:
+            if (cmd.size() >= 2) {
+                var->current.integer = GameUtil::safeStringToInt(cmd[1]);
+            }
+            break;
+        case DVAR_TYPE_ENUM:
+            if (cmd.size() >= 2) {
+                var->current.integer = GameUtil::safeStringToInt(cmd[1]);
+            }
+            break;
+        case DVAR_TYPE_STRING:
+            if (cmd.size() >= 2) {
+                var->current.string = _strdup(cmd[1].c_str());
+            }
+            break;
+        default:
+            Console::print("Unsupported dvar type: " + std::to_string(var->type));
+            break;
+        }
+        return true;
+    }
+    else {
+        Console::print("no dvar \"" + dvarname + "\"");
+        return false;
+    }
+}
+
 
 void DvarInterface::addMapping(const std::string& userString, const std::string& engineString) {
-    userToEngineMap[userString] = engineString;
+    std::string dvarLower = userString;
+    std::transform(dvarLower.begin(), dvarLower.end(), dvarLower.begin(), GameUtil::asciiToLower);
+    userToEngineMap[dvarLower] = engineString;
     engineToUserMap[engineString] = userString;
 }
 
 std::string DvarInterface::toEngineString(const std::string& userString) {
-    auto it = userToEngineMap.find(userString);
+    std::string dvarLower = userString;
+    std::transform(dvarLower.begin(), dvarLower.end(), dvarLower.begin(), GameUtil::asciiToLower);
+    auto it = userToEngineMap.find(dvarLower);
     if (it != userToEngineMap.end()) {
+        Console::print(userString + " ----> " + it->second);
         return it->second;
     }
     return userString; //couldnt find
@@ -25,14 +78,6 @@ std::string DvarInterface::toUserString(const std::string& engineString) {
         return it->second;
     }
     return engineString; //couldnt find
-}
-
-bool DvarInterface::hasUserString(const std::string& userString) {
-    return userToEngineMap.find(userString) != userToEngineMap.end();
-}
-
-bool DvarInterface::hasEngineString(const std::string& engineString) {
-    return engineToUserMap.find(engineString) != engineToUserMap.end();
 }
 
 void DvarInterface::init() {
