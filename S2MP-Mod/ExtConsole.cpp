@@ -14,6 +14,7 @@
 #include "DevPatches.hpp"
 #include "PrintPatches.hpp"
 #include "DebugPatches.hpp"
+#include "DvarInterface.hpp"
 
 #pragma comment(lib, "libMinHook.x64.lib")
 
@@ -100,6 +101,7 @@ void ExtConsole::extConInit(int extConsoleMode) {
 	//DebugPatches::init();
 	//PrintPatches::init();
 	DevPatches::init();
+	DvarInterface::init();
 
 	if (extConsoleMode == 0 || extConsoleMode == 2) {
 		consoleMainLoop();
