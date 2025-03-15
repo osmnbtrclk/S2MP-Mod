@@ -121,4 +121,11 @@ void DvarInterface::init() {
     addMapping("r_tessellationHeightScale", "672");
     addMapping("r_tessellationHybrid", "551");
     addMapping("r_tessellationEyeScale", "330");
+    addMapping("r_offchipTessellationAllowed", "1938");
+    addMapping("r_offchipTessellationTfThreshold", "635");
+    addMapping("r_offchipTessellationWaveThreshold", "4679");
+    addMapping("r_patchCountAllowed", "3925");
+    addMapping("r_subdivPatchCount", "4902");
+    addMapping("r_displacementPatchCount", "3287");
+    addMapping("r_defaultPatchCount", "3923");
 }
