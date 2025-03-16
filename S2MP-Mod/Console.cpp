@@ -46,6 +46,17 @@ void Console::infoPrint(std::string text) {
 	//.....
 }
 
+//TODO: add preprocessor directive for developer like in t6sp-mod
+void Console::devPrint(std::string text) {
+	std::string s = "[DEV] " + text;
+	//External CLI
+	ExtConsole::coutInfo(text);
+	//External Console Window
+	ExternalConsoleGui::print(s);
+	//Internal Console
+	//.....
+}
+
 void Console::initPrint(std::string text) {
 	std::string s = "[INIT] " + text;
 	//External CLI
@@ -73,7 +84,7 @@ std::vector<std::string> Console::parseCmdToVec(const std::string& cmd) {
 	return components;
 }
 
-//move to gameutil
+//TODO: move to gameutil
 std::string toHex(uint32_t value) {
 	std::stringstream ss;
 	ss << std::hex << value;
@@ -84,12 +95,17 @@ bool execCustomCmd(std::string& cmd) {
 	std::transform(cmd.begin(), cmd.end(), cmd.begin(), GameUtil::asciiToLower);
 	std::vector<std::string> p = Console::parseCmdToVec(cmd);
 
-	if (p.size() < 1) {
-		return false;
-	}
 	if (p[0] == "trans") {
 		if (p.size() == 2) {
 			Console::print("Translated String: " + std::string(Functions::_SEH_SafeTranslateString(p[1].c_str())));
+		}
+		return true;
+	}
+	
+	if (p[0] == "send") {
+		if (p.size() == 2) {
+			std::string str = "%c \"" + p[1] + "\"";
+			Functions::_SV_SendServerCommand(0i64, 0, str.c_str(), 101i64);
 		}
 		return true;
 	}
@@ -113,18 +129,21 @@ bool execCustomCmd(std::string& cmd) {
 		if (p.size() >= 2) {
 			CustomCommands::toggleHud(GameUtil::stringToBool(p[1]));
 		}
+		return true;
 	}
 	
 	if (p[0] == "r_fog") {
 		if (p.size() >= 2) {
 			CustomCommands::toggleFog(GameUtil::stringToBool(p[1]));
 		}
+		return true;
 	}
 	
 	if (p[0] == "cg_drawgun") {
 		if (p.size() >= 2) {
 			CustomCommands::toggleGun(GameUtil::stringToBool(p[1]));
 		}
+		return true;
 	}
 
 	return false;

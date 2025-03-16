@@ -2,6 +2,9 @@
 #include "structs.h"
 class Functions {
 public:
+	typedef void(__cdecl* SV_SendServerCommand)(__int64 client, int type, const char* fmt, ...);
+	static SV_SendServerCommand _SV_SendServerCommand;
+	
 	typedef void(__cdecl* Com_Error)(errorParm_t code, const char* fmt, ...);
 	static Com_Error _Com_Error;
 	

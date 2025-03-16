@@ -10,7 +10,5 @@
 uintptr_t DevPatches::base = (uintptr_t)GetModuleHandle(NULL) + 0x1000;
 
 void DevPatches::init() {
-    Console::infoPrint("DevPatches::init()");
-
-    
+    Console::initPrint("DevPatches::init()");
 }

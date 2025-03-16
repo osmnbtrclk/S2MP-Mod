@@ -94,11 +94,8 @@ void ExtConsole::extConInit(int extConsoleMode) {
 		Console::print("Minhook init failed");
 		//TODO:Add some like error handling here or a global var
 	}
-	else {
-		//Console::print("Minhook init");
-	}
 
-	//DebugPatches::init();
+	DebugPatches::init();
 	//PrintPatches::init();
 	DevPatches::init();
 	DvarInterface::init();

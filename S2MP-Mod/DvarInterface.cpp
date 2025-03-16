@@ -66,7 +66,7 @@ std::string DvarInterface::toEngineString(const std::string& userString) {
     std::transform(dvarLower.begin(), dvarLower.end(), dvarLower.begin(), GameUtil::asciiToLower);
     auto it = userToEngineMap.find(dvarLower);
     if (it != userToEngineMap.end()) {
-        Console::print(userString + " ----> " + it->second);
+        Console::devPrint(userString + " ----> " + it->second);
         return it->second;
     }
     return userString; //couldnt find
@@ -80,9 +80,7 @@ std::string DvarInterface::toUserString(const std::string& engineString) {
     return engineString; //couldnt find
 }
 
-void DvarInterface::init() {
-    Console::infoPrint("Initializing Dvar Interface");
-    //only gonna put ones that are actually used
+void DvarInterface::addAllMappings() {
     addMapping("r_disable_clutter", "1841");
     addMapping("r_texFilterDisable", "91");
     addMapping("r_texFilterMipMode", "4107");
@@ -244,4 +242,10 @@ void DvarInterface::init() {
     addMapping("r_frustomLightUseZBinning", "2244");
     addMapping("r_lightDpvs", "3825");
     addMapping("r_forwardPlusMode", "5818");
+}
+
+void DvarInterface::init() {
+    Console::initPrint("DvarInterface::init()");
+    DvarInterface::addAllMappings();
+    Console::infoPrint("Mapped " + std::to_string(DvarInterface::userToEngineMap.size()) + " DVars");
 }
