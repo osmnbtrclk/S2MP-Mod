@@ -96,7 +96,7 @@ jobs:
           Get-Content S2MP-Mod\S2MP-Mod.vcxproj | Select-String "libMinHook"
           
           # Build with additional library directories and additional dependencies specified
-          msbuild /m /p:MultiProcessorCompilation=true /maxcpucount /v:minimal /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 /p:AdditionalLibraryDirectories="$(Get-Location)\lib" /p:AdditionalDependencies="libMinHook.x64.lib;%(AdditionalDependencies)" S2MP-Mod.sln
+          msbuild /m /p:MultiProcessorCompilation=true /maxcpucount /v:minimal /p:Configuration=Release /p:Platform=x64 /p:AdditionalLibraryDirectories="$PWD\lib" /p:AdditionalDependencies="libMinHook.x64.lib" S2MP-Mod.sln
 
       # Step 7: Upload build artifacts
       - name: Upload artifacts
