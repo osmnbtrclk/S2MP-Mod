@@ -33,45 +33,23 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      # Step 4: Install MinHook using vcpkg and copy to expected location
-      - name: Install MinHook using vcpkg
+      # Step 4: Build and install MinHook
+      - name: Build MinHook
         run: |
-          git clone https://github.com/microsoft/vcpkg
-          .\vcpkg\bootstrap-vcpkg.bat
-          .\vcpkg\vcpkg integrate install
-          .\vcpkg\vcpkg install minhook:x64-windows
+          # Clone MinHook repository
+          git clone https://github.com/TsudaKageyu/minhook.git
+          cd minhook
           
-          # Create the lib directory if it doesn't exist
+          # Build MinHook in Release mode
+          mkdir build && cd build
+          cmake -G "Visual Studio 17 2022" -A x64 ..
+          cmake --build . --config Release
+          
+          # Create lib directory and copy the built library with correct name
+          cd ..\..
           mkdir -p lib
-          
-          # Find the MinHook library in the vcpkg installation
-          Write-Host "Searching for MinHook libraries..."
-          Get-ChildItem -Path .\vcpkg\packages -Recurse -Include "*.lib" | ForEach-Object { Write-Host $_.FullName }
-          
-          # Copy the MinHook library to the expected location
-          $minhookLib = Get-ChildItem -Path .\vcpkg\packages -Recurse -Include "minhook.lib" | Select-Object -First 1
-          if ($minhookLib) {
-            Copy-Item $minhookLib.FullName -Destination .\lib\libMinHook.x64.lib
-            Write-Host "Copied MinHook library from $($minhookLib.FullName) to .\lib\libMinHook.x64.lib"
-          } else {
-            Write-Host "Could not find minhook.lib, trying alternative approach"
-            # Use the alternative approach - manually download and build MinHook
-            git clone https://github.com/TsudaKageyu/minhook.git
-            cd minhook
-            mkdir build && cd build
-            cmake -G "Visual Studio 17 2022" -A x64 ..
-            cmake --build . --config ${{ matrix.configuration }}
-            
-            # Create lib directory and copy the built library
-            cd ..\..
-            if (Test-Path "minhook\build\${{ matrix.configuration }}\minhook.lib") {
-              Copy-Item "minhook\build\${{ matrix.configuration }}\minhook.lib" -Destination "lib\libMinHook.x64.lib"
-              Write-Host "Copied manually built MinHook library to lib directory"
-            } else {
-              Write-Error "Failed to build MinHook library"
-              exit 1
-            }
-          }
+          Copy-Item "minhook\build\Release\minhook.lib" -Destination "lib\libMinHook.x64.lib"
+          Write-Host "Successfully built and copied MinHook library"
 
       # Step 5: Restore dependencies
       - name: Restore dependencies
