@@ -1,3 +1,7 @@
+//////////////////////////////////////
+//			Ext Console
+//	Logic for the external console(s)
+//////////////////////////////////////
 #include "pch.h"
 #include <iostream>
 #include <Windows.h>

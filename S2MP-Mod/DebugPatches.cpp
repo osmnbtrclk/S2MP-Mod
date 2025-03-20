@@ -1,3 +1,7 @@
+///////////////////////////////////
+//			Debug Patches
+//	Probably not needed anymore
+////////////////////////////////////
 #include "pch.h"
 #include "Console.h"
 #include "DebugPatches.hpp"

@@ -1,3 +1,7 @@
+/////////////////////////////
+//		Hook
+//	x64 Hooking Util
+/////////////////////////////
 #include "pch.h"
 #include "Hook.hpp"
 #include <cstdint>

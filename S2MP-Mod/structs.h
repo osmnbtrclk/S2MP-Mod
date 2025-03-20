@@ -1,3 +1,7 @@
+//////////////////
+//	   structs.h
+//	Engine Structs
+///////////////////
 #pragma once
 struct CmdText
 {

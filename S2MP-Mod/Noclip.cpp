@@ -1,3 +1,7 @@
+///////////////////////////////////
+//			  Noclip
+//	Removes the player from Yesclip
+////////////////////////////////////
 #include "pch.h"
 #include "Noclip.hpp"
 #include "Console.h"

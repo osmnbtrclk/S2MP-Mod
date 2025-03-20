@@ -1,3 +1,7 @@
+///////////////////////////////////////////////
+//			    Config Manager
+//	Just for the ext con to save preferences
+////////////////////////////////////////////////
 #include "pch.h"
 #include "ConfigManager.h"
 #include <fstream>
@@ -13,10 +17,9 @@ bool ConfigManager::readConfigValue(const std::string& filename, const std::stri
         std::string fileValue = line.substr(delimiterPos + 1);
 
         if (fileKey == key) {
-            return fileValue == "true"; //return true if the value is "true", false otherwise
+            return fileValue == "true";
         }
     }
-    //default value if the key is not found or file doesn't exist
     return false;
 }
 

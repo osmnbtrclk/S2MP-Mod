@@ -1,3 +1,7 @@
+//////////////////////////////
+//		 Custom Commands
+//	Logic for custom commands
+//////////////////////////////
 #include "pch.h"
 #include "CustomCommands.hpp"
 #include "Console.h"
@@ -52,6 +56,7 @@ void CustomCommands::toggleGun(bool b) {
 	}
 }
 
+//r_fog
 void CustomCommands::toggleFog(bool b) {
 	constexpr std::array<unsigned char, 5> DISABLE_FOG_PATCH_BYTES = { 0x90, 0x90, 0x90, 0x90, 0x90 }; //patch
 	constexpr std::array<unsigned char, 5> ENABLE_FOG_PATCH_BYTES = { 0xE8, 0x02, 0x4B, 0x46, 0x00 }; //original

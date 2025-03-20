@@ -1,3 +1,7 @@
+//////////////////////////////////////
+//			Ext Console Gui
+//	Win32 Window for external console
+//////////////////////////////////////
 #include "pch.h"
 #include <windows.h>
 #include "resource.h"

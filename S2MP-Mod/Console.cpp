@@ -1,3 +1,7 @@
+///////////////////////////////////////
+//				Console
+//	Logic and Util for int and ext con
+///////////////////////////////////////
 #include "pch.h"
 #include "Console.h"
 #include <string>
@@ -8,7 +12,6 @@
 #include <sstream>
 #include <array>
 #include "FuncPointers.h"
-
 #include "structs.h"
 #include <regex>
 #include "GameUtil.hpp"
@@ -16,7 +19,6 @@
 #include "CustomCommands.hpp"
 #include "DvarInterface.hpp"
 
-uintptr_t t9base = (uintptr_t)GetModuleHandle(NULL);
 
 void Console::print(std::string text) {
 	//External CLI

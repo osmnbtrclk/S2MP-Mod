@@ -1,3 +1,7 @@
+//////////////////////////////////
+//			  Game Util
+//	Utility functions for the mod
+//////////////////////////////////
 #include "pch.h"
 #include "GameUtil.hpp"
 #include "FuncPointers.h"

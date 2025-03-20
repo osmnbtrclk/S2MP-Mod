@@ -1,3 +1,7 @@
+///////////////////////////////////////////////
+//			Print Patches
+//	For reimplementing stripped print statements
+////////////////////////////////////////////////
 #include "pch.h"
 #include "Console.h"
 #include "PrintPatches.hpp"
@@ -6,11 +10,8 @@
 uintptr_t PrintPatches::base = (uintptr_t)GetModuleHandle(NULL) + 0x1000;
 
 typedef void(*CM_LoadMap)(const char* name, int* checksum);
-
-// Declare a pointer to hold the address of the original function
 CM_LoadMap _CM_LoadMap = nullptr;
 
-// Hook function that prints the name and proceeds with the original function
 void hook_CM_LoadMap(const char* name, int* checksum) {
     Console::infoPrint("Loading Map: " + std::string(name));
     _CM_LoadMap(name, checksum);
