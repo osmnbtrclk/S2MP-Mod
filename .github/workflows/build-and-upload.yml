@@ -59,8 +59,10 @@ jobs:
 
           # Copy the files
           Copy-Item $MinHookLibPath -Destination "lib\libMinHook.x64.lib" -Force
-          Copy-Item $MinHookLibPath -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
           Copy-Item $MinHookHeaderPath -Destination "include\MinHook.h" -Force
+
+          # Ensure the library is copied to the correct location
+          Copy-Item $MinHookLibPath -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
 
       # Step 5: Restore dependencies
       - name: Restore dependencies
@@ -78,10 +80,10 @@ jobs:
           # Display the library path in the project file for debugging
           Get-Content S2MP-Mod\S2MP-Mod.vcxproj | Select-String "libMinHook"
           
-          $LibPath = "$PWD\lib"
+          $LibPath = "$PWD\S2MP-Mod\lib"
           Write-Host "Library Path: $LibPath"
-          if (-not (Test-Path "$PWD\lib\libMinHook.x64.lib")) {
-            Write-Error "libMinHook.x64.lib not found in $PWD\lib"
+          if (-not (Test-Path "$LibPath\libMinHook.x64.lib")) {
+            Write-Error "libMinHook.x64.lib not found in $LibPath"
             exit 1
           }
 
