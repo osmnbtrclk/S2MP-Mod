@@ -52,12 +52,23 @@ jobs:
           
           # Create lib directory and copy the built library with correct name
           cd ..\..
-          if (-not (Test-Path "lib")) {
-            mkdir lib
+          
+          # Create necessary directories
+          $libDirs = @("lib", "S2MP-Mod\lib")
+          foreach ($dir in $libDirs) {
+            if (-not (Test-Path $dir)) {
+              mkdir $dir
+              Write-Host "Created directory: $dir"
+            }
           }
           
-          # Use the correct filename (minhook.x64.lib instead of minhook.lib)
+          # Copy the library to multiple possible locations to ensure it's found
           Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "lib\libMinHook.x64.lib"
+          Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "S2MP-Mod\lib\libMinHook.x64.lib"
+          
+          # List directories to verify
+          Get-ChildItem -Path "lib" -Recurse
+          Get-ChildItem -Path "S2MP-Mod\lib" -Recurse
           
           # Create include directory and copy header files
           if (-not (Test-Path "include")) {
@@ -72,7 +83,12 @@ jobs:
 
       # Step 6: Build the solution with optimized settings
       - name: Build the solution
-        run: msbuild /m /p:MultiProcessorCompilation=true /maxcpucount /v:minimal /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 S2MP-Mod.sln
+        run: |
+          # Display the library path in the project file for debugging
+          Get-Content S2MP-Mod\S2MP-Mod.vcxproj | Select-String "libMinHook"
+          
+          # Build with additional library directories specified
+          msbuild /m /p:MultiProcessorCompilation=true /maxcpucount /v:minimal /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 /p:AdditionalLibraryDirectories="$(Get-Location)\lib" S2MP-Mod.sln
 
       # Step 7: Upload build artifacts
       - name: Upload artifacts
