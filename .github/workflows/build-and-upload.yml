@@ -22,10 +22,10 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      # Step 3: Install C++ build tools
+      # Step 3: Install C++ Build Tools
       - name: Install C++ Build Tools
         run: |
-          choco install visualstudio2022buildtools --version=17.3.4 --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --norestart"
+          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --norestart"
           refreshenv
 
       # Step 4: Restore dependencies
@@ -33,7 +33,6 @@ jobs:
         run: dotnet restore
 
       # Step 5: Build the solution
-      - name: Build the solution
         run: dotnet build --configuration Release
 
       # Step 6: Upload build artifacts
