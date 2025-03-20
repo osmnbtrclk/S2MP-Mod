@@ -36,46 +36,27 @@ jobs:
       # Step 4: Build and install MinHook
       - name: Build MinHook
         run: |
-          # Clone MinHook repository
+          # First, build MinHook
           git clone https://github.com/TsudaKageyu/minhook.git
           cd minhook
-          
-          # Build MinHook in Release mode
-          if (Test-Path "build") {
-            Write-Host "Build directory already exists"
-          } else {
-            mkdir build
-          }
+          mkdir build
           cd build
           cmake -G "Visual Studio 17 2022" -A x64 ..
           cmake --build . --config Release
-          
-          # Create lib directory and copy the built library with correct name
-          cd ..\..
-          
-          # Create necessary directories
-          $libDirs = @("lib", "S2MP-Mod\lib")
-          foreach ($dir in $libDirs) {
-            if (-not (Test-Path $dir)) {
-              mkdir $dir
-              Write-Host "Created directory: $dir"
-            }
-          }
-          
-          # Copy the library to multiple possible locations to ensure it's found
+          cd ../..
+
+          # Create the necessary directories
+          mkdir -p lib
+          mkdir -p include
+          mkdir -p S2MP-Mod\lib
+
+          # Copy MinHook files to the correct locations
           Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "lib\libMinHook.x64.lib"
           Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "S2MP-Mod\lib\libMinHook.x64.lib"
-          
-          # List directories to verify
-          Get-ChildItem -Path "lib" -Recurse
-          Get-ChildItem -Path "S2MP-Mod\lib" -Recurse
-          
-          # Create include directory and copy header files
-          if (-not (Test-Path "include")) {
-            mkdir include
-          }
           Copy-Item "minhook\include\MinHook.h" -Destination "include\MinHook.h"
-          Write-Host "Successfully built and copied MinHook library and headers"
+
+          # Now build the project (fix for the error in your command)
+          msbuild /p:Configuration=Release /p:Platform=x64 S2MP-Mod.sln
 
       # Step 5: Restore dependencies
       - name: Restore dependencies
