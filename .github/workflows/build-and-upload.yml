@@ -21,25 +21,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up .NET environment
+      # Step 2: Set up MSBuild directly (faster than installing build tools)
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+
+      # Step 3: Set up .NET environment
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '6.0'
 
-      # Step 3: Install C++ Build Tools
-      - name: Install C++ Build Tools
-        run: |
-          choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --norestart"
-          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-
       # Step 4: Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # Step 5: Build the solution
+      # Step 5: Build the solution with optimized settings
       - name: Build the solution
-        run: msbuild /m /v:minimal /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 S2MP-Mod.sln
+        run: msbuild /m /p:MultiProcessorCompilation=true /maxcpucount /v:minimal /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 S2MP-Mod.sln
 
       # Step 6: Upload build artifacts
       - name: Upload artifacts
