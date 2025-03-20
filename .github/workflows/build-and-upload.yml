@@ -36,24 +36,31 @@ jobs:
       # Step 4: Build and install MinHook
       - name: Build MinHook
         run: |
-          # First, build MinHook
+          # First, build MinHook - check if folder exists and remove it if it does
+          if (Test-Path -Path "minhook") {
+            Remove-Item -Path "minhook" -Recurse -Force
+          }
           git clone https://github.com/TsudaKageyu/minhook.git
           cd minhook
-          mkdir build
+          
+          # Create build directory if it doesn't exist
+          if (-not (Test-Path -Path "build")) {
+            mkdir build
+          }
           cd build
           cmake -G "Visual Studio 17 2022" -A x64 ..
           cmake --build . --config Release
           cd ../..
 
-          # Create the necessary directories
-          mkdir -p lib
-          mkdir -p include
-          mkdir -p S2MP-Mod\lib
+          # Create the necessary directories - using '-Force' to ignore errors if they exist
+          mkdir -p lib -Force
+          mkdir -p include -Force
+          mkdir -p S2MP-Mod\lib -Force
 
           # Copy MinHook files to the correct locations
-          Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "lib\libMinHook.x64.lib"
-          Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "S2MP-Mod\lib\libMinHook.x64.lib"
-          Copy-Item "minhook\include\MinHook.h" -Destination "include\MinHook.h"
+          Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "lib\libMinHook.x64.lib" -Force
+          Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
+          Copy-Item "minhook\include\MinHook.h" -Destination "include\MinHook.h" -Force
 
           # Now build the project (fix for the error in your command)
           msbuild /p:Configuration=Release /p:Platform=x64 S2MP-Mod.sln
