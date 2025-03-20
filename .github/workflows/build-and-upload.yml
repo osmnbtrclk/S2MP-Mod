@@ -53,7 +53,9 @@ jobs:
           # Create lib directory and copy the built library with correct name
           cd ..\..
           mkdir -p lib
-          Copy-Item "minhook\build\Release\minhook.lib" -Destination "lib\libMinHook.x64.lib"
+          
+          # Use the correct filename (minhook.x64.lib instead of minhook.lib)
+          Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "lib\libMinHook.x64.lib"
           Write-Host "Successfully built and copied MinHook library"
 
       # Step 5: Restore dependencies
