@@ -56,7 +56,11 @@ jobs:
           
           # Use the correct filename (minhook.x64.lib instead of minhook.lib)
           Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "lib\libMinHook.x64.lib"
-          Write-Host "Successfully built and copied MinHook library"
+          
+          # Create include directory and copy header files
+          mkdir -p include
+          Copy-Item "minhook\include\MinHook.h" -Destination "include\MinHook.h"
+          Write-Host "Successfully built and copied MinHook library and headers"
 
       # Step 5: Restore dependencies
       - name: Restore dependencies
