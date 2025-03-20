@@ -3,14 +3,19 @@ name: Build and Upload Artifacts
 on:
   push:
     branches:
-      - main
+      - "*"
   pull_request:
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   build:
-    runs-on: windows-latest # Use Windows runner for C++ projects
-
+    runs-on: windows-2022 # Use Windows runner for C++ projects
+    strategy:
+      matrix:
+        configuration:
+          - Debug
+          - Release
+          
     steps:
       # Step 1: Check out the repository
       - name: Checkout code
@@ -26,7 +31,7 @@ jobs:
       - name: Install C++ Build Tools
         run: |
           choco install visualstudio2022buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --quiet --norestart"
-          refreshenv
+          Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 
       # Step 4: Restore dependencies
       - name: Restore dependencies
