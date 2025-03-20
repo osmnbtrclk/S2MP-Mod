@@ -44,14 +44,33 @@ jobs:
           # Create the lib directory if it doesn't exist
           mkdir -p lib
           
-          # Find and copy the MinHook library to the location expected by the project
-          $minhookLib = Get-ChildItem -Path .\vcpkg\installed -Recurse -Filter "libMinHook.lib"
+          # Find the MinHook library in the vcpkg installation
+          Write-Host "Searching for MinHook libraries..."
+          Get-ChildItem -Path .\vcpkg\packages -Recurse -Include "*.lib" | ForEach-Object { Write-Host $_.FullName }
+          
+          # Copy the MinHook library to the expected location
+          $minhookLib = Get-ChildItem -Path .\vcpkg\packages -Recurse -Include "minhook.lib" | Select-Object -First 1
           if ($minhookLib) {
             Copy-Item $minhookLib.FullName -Destination .\lib\libMinHook.x64.lib
-            Write-Output "Copied MinHook library to lib directory"
+            Write-Host "Copied MinHook library from $($minhookLib.FullName) to .\lib\libMinHook.x64.lib"
           } else {
-            Write-Error "Could not find MinHook library"
-            exit 1
+            Write-Host "Could not find minhook.lib, trying alternative approach"
+            # Use the alternative approach - manually download and build MinHook
+            git clone https://github.com/TsudaKageyu/minhook.git
+            cd minhook
+            mkdir build && cd build
+            cmake -G "Visual Studio 17 2022" -A x64 ..
+            cmake --build . --config ${{ matrix.configuration }}
+            
+            # Create lib directory and copy the built library
+            cd ..\..
+            if (Test-Path "minhook\build\${{ matrix.configuration }}\minhook.lib") {
+              Copy-Item "minhook\build\${{ matrix.configuration }}\minhook.lib" -Destination "lib\libMinHook.x64.lib"
+              Write-Host "Copied manually built MinHook library to lib directory"
+            } else {
+              Write-Error "Failed to build MinHook library"
+              exit 1
+            }
           }
 
       # Step 5: Restore dependencies
