@@ -33,13 +33,26 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      # Step 4: Install MinHook using vcpkg
+      # Step 4: Install MinHook using vcpkg and copy to expected location
       - name: Install MinHook using vcpkg
         run: |
           git clone https://github.com/microsoft/vcpkg
           .\vcpkg\bootstrap-vcpkg.bat
           .\vcpkg\vcpkg integrate install
           .\vcpkg\vcpkg install minhook:x64-windows
+          
+          # Create the lib directory if it doesn't exist
+          mkdir -p lib
+          
+          # Find and copy the MinHook library to the location expected by the project
+          $minhookLib = Get-ChildItem -Path .\vcpkg\installed -Recurse -Filter "libMinHook.lib"
+          if ($minhookLib) {
+            Copy-Item $minhookLib.FullName -Destination .\lib\libMinHook.x64.lib
+            Write-Output "Copied MinHook library to lib directory"
+          } else {
+            Write-Error "Could not find MinHook library"
+            exit 1
+          }
 
       # Step 5: Restore dependencies
       - name: Restore dependencies
