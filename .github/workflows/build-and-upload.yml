@@ -33,20 +33,13 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      # Step 4: Install or build MinHook dependency
-      - name: Setup MinHook
+      # Step 4: Install MinHook using vcpkg
+      - name: Install MinHook using vcpkg
         run: |
-          # Clone MinHook if it's not included in the repository
-          if (-not (Test-Path "external\minhook")) {
-            git clone https://github.com/TsudaKageyu/minhook.git external\minhook
-            cd external\minhook
-            # Build MinHook
-            msbuild /m /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 build\VC15\MinHook.sln
-            # Copy lib files to expected location
-            mkdir -p ..\..\lib
-            cp build\VC15\${{ matrix.configuration }}\lib\libMinHook.x64.lib ..\..\lib\
-            cd ..\..
-          }
+          git clone https://github.com/microsoft/vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat
+          .\vcpkg\vcpkg integrate install
+          .\vcpkg\vcpkg install minhook:x64-windows
 
       # Step 5: Restore dependencies
       - name: Restore dependencies
