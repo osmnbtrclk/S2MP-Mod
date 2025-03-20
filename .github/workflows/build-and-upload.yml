@@ -54,6 +54,9 @@ jobs:
           $MinHookLibPath = Get-ChildItem -Path "$VcpkgRoot\lib" -Filter "*minhook*.lib" | Select-Object -First 1 -ExpandProperty FullName
           $MinHookHeaderPath = Get-ChildItem -Path "$VcpkgRoot\include" -Filter "*minhook*.h" -Recurse | Select-Object -First 1 -ExpandProperty FullName
 
+          Write-Host "MinHook Library Path: $MinHookLibPath"
+          Write-Host "MinHook Header Path: $MinHookHeaderPath"
+
           # Copy the files
           Copy-Item $MinHookLibPath -Destination "lib\libMinHook.x64.lib" -Force
           Copy-Item $MinHookLibPath -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
@@ -75,10 +78,13 @@ jobs:
           # Display the library path in the project file for debugging
           Get-Content S2MP-Mod\S2MP-Mod.vcxproj | Select-String "libMinHook"
           
-          # Make sure the library paths are properly quoted
-          $LibPath = """$PWD\lib"""
-          
-          # Use MSBuild with fixed path syntax
+          $LibPath = "$PWD\lib"
+          Write-Host "Library Path: $LibPath"
+          if (-not (Test-Path "$PWD\lib\libMinHook.x64.lib")) {
+            Write-Error "libMinHook.x64.lib not found in $PWD\lib"
+            exit 1
+          }
+
           msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 "/p:AdditionalLibraryDirectories=$LibPath" S2MP-Mod.sln
 
       # Step 7: Upload build artifacts
