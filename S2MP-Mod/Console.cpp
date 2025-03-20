@@ -1,6 +1,6 @@
 ///////////////////////////////////////
-//				Console
-//	Logic and Util for int and ext con
+//             Console
+// Logic and Util for int and ext con
 ///////////////////////////////////////
 #include "pch.h"
 #include "Console.h"
