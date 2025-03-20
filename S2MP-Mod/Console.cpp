@@ -82,7 +82,6 @@ std::vector<std::string> Console::parseCmdToVec(const std::string& cmd) {
 		}
 		components.push_back(match);
 	}
-
 	return components;
 }
 
@@ -148,7 +147,6 @@ bool execCustomCmd(std::string& cmd) {
 		}
 		return true;
 	}
-
 	return false;
 }
 

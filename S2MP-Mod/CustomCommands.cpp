@@ -25,11 +25,6 @@ void CustomCommands::toggleGodmode() {
 	CustomCommands::isGodmode = !CustomCommands::isGodmode;
 }
 
-void CustomCommands::testPrint() {
-	//Functions::_Scr_MakeGameMessage("Test Game Message");
-	Functions::_Com_Error(ERR_DROP, "1125");
-}
-
 //cg_drawlui
 void CustomCommands::toggleHud(bool b) {
 	constexpr std::array<unsigned char, 5> DISABLE_HUD_PATCH_BYTES = { 0x90, 0x90, 0x90, 0x90, 0x90 }; //patch

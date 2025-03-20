@@ -15,6 +15,7 @@ std::unordered_map<std::string, std::string> DvarInterface::userToEngineMap;
 std::unordered_map<std::string, std::string> DvarInterface::engineToUserMap;
 
 //dvar name and exploded cmd
+//TODO: Add more dvar types support
 bool DvarInterface::setDvar(std::string& dvarname, std::vector<std::string> cmd) {
     std::string dvarLower = dvarname;
     std::transform(dvarLower.begin(), dvarLower.end(), dvarLower.begin(), GameUtil::asciiToLower);
