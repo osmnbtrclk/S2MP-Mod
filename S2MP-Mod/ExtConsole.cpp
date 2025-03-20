@@ -67,7 +67,6 @@ void ExtConsole::extConInit(int extConsoleMode) {
 		}
 	}
 	if (extConsoleMode == 0 || extConsoleMode == 2) {
-
 		//title stuff
 		int size = MultiByteToWideChar(CP_UTF8, 0, "S2MP-Mod External Console", -1, NULL, 0);
 		wchar_t* wtitle = new wchar_t[size];
@@ -78,7 +77,6 @@ void ExtConsole::extConInit(int extConsoleMode) {
 
 	infoPrintOffsets();
 	Console::print("Sys_Cwd(): " + std::string(Functions::_Sys_Cwd()));
-
 
 	MH_STATUS status = MH_Initialize();
 	if (status != MH_OK) {
