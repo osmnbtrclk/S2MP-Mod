@@ -52,13 +52,17 @@ jobs:
           
           # Create lib directory and copy the built library with correct name
           cd ..\..
-          mkdir -p lib
+          if (-not (Test-Path "lib")) {
+            mkdir lib
+          }
           
           # Use the correct filename (minhook.x64.lib instead of minhook.lib)
           Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "lib\libMinHook.x64.lib"
           
           # Create include directory and copy header files
-          mkdir -p include
+          if (-not (Test-Path "include")) {
+            mkdir include
+          }
           Copy-Item "minhook\include\MinHook.h" -Destination "include\MinHook.h"
           Write-Host "Successfully built and copied MinHook library and headers"
 
