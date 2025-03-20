@@ -33,33 +33,53 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      # Step 4: Setup vcpkg and install MinHook
+      # Step 4: Setup vcpkg and install MinHook with improved error handling
       - name: Setup vcpkg and Install MinHook
         run: |
-          # Clone vcpkg if it doesn't exist
-          if (-not (Test-Path -Path "vcpkg")) {
-            git clone https://github.com/microsoft/vcpkg
+          # Clone vcpkg with a timeout
+          git clone --depth=1 https://github.com/microsoft/vcpkg
+          
+          # Bootstrap vcpkg with timeout
+          $bootstrapProcess = Start-Process -FilePath ".\vcpkg\bootstrap-vcpkg.bat" -NoNewWindow -PassThru -Wait
+          if ($bootstrapProcess.ExitCode -ne 0) {
+            Write-Error "vcpkg bootstrap failed with exit code $($bootstrapProcess.ExitCode)"
+            exit 1
           }
           
-          # Bootstrap vcpkg
-          .\vcpkg\bootstrap-vcpkg.bat
-          
-          # Integrate vcpkg with Visual Studio
+          # Integrate vcpkg with VS
           .\vcpkg\vcpkg integrate install
           
-          # Install MinHook
-          .\vcpkg\vcpkg install minhook:x64-windows
+          # Install MinHook with timeout
+          $installProcess = Start-Process -FilePath ".\vcpkg\vcpkg" -ArgumentList "install minhook:x64-windows" -NoNewWindow -PassThru -Wait
+          if ($installProcess.ExitCode -ne 0) {
+            Write-Error "MinHook installation failed with exit code $($installProcess.ExitCode)"
+            exit 1
+          }
           
-          # Create necessary directories
+          # Create directories
           mkdir -p lib -Force
           mkdir -p include -Force
           mkdir -p S2MP-Mod\lib -Force
           
-          # Copy MinHook libraries and headers to the correct locations
+          # Copy files with error handling
           $VcpkgRoot = ".\vcpkg\installed\x64-windows"
-          Copy-Item "$VcpkgRoot\lib\minhook.lib" -Destination "lib\libMinHook.x64.lib" -Force
-          Copy-Item "$VcpkgRoot\lib\minhook.lib" -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
-          Copy-Item "$VcpkgRoot\include\MinHook.h" -Destination "include\MinHook.h" -Force
+          
+          if (Test-Path "$VcpkgRoot\lib\minhook.lib") {
+            Copy-Item "$VcpkgRoot\lib\minhook.lib" -Destination "lib\libMinHook.x64.lib" -Force
+            Copy-Item "$VcpkgRoot\lib\minhook.lib" -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
+          } else {
+            Write-Error "MinHook library not found at expected location"
+            Get-ChildItem -Path "$VcpkgRoot\lib" -Recurse | ForEach-Object { Write-Host $_.FullName }
+            exit 1
+          }
+          
+          if (Test-Path "$VcpkgRoot\include\MinHook.h") {
+            Copy-Item "$VcpkgRoot\include\MinHook.h" -Destination "include\MinHook.h" -Force
+          } else {
+            Write-Error "MinHook header not found at expected location"
+            Get-ChildItem -Path "$VcpkgRoot\include" -Recurse | ForEach-Object { Write-Host $_.FullName }
+            exit 1
+          }
 
       # Step 5: Restore dependencies
       - name: Restore dependencies
