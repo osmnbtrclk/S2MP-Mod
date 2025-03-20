@@ -39,7 +39,7 @@ jobs:
 
       # Step 5: Build the solution
       - name: Build the solution
-        run: dotnet build --configuration Release
+        run: msbuild /m /v:minimal /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 S2MP-Mod.sln
 
       # Step 6: Upload build artifacts
       - name: Upload artifacts
