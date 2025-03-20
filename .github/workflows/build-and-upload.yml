@@ -33,37 +33,33 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      # Step 4: Build and install MinHook
-      - name: Build MinHook
+      # Step 4: Setup vcpkg and install MinHook
+      - name: Setup vcpkg and Install MinHook
         run: |
-          # First, build MinHook - check if folder exists and remove it if it does
-          if (Test-Path -Path "minhook") {
-            Remove-Item -Path "minhook" -Recurse -Force
+          # Clone vcpkg if it doesn't exist
+          if (-not (Test-Path -Path "vcpkg")) {
+            git clone https://github.com/microsoft/vcpkg
           }
-          git clone https://github.com/TsudaKageyu/minhook.git
-          cd minhook
           
-          # Create build directory if it doesn't exist
-          if (-not (Test-Path -Path "build")) {
-            mkdir build
-          }
-          cd build
-          cmake -G "Visual Studio 17 2022" -A x64 ..
-          cmake --build . --config Release
-          cd ../..
-
-          # Create the necessary directories - using '-Force' to ignore errors if they exist
+          # Bootstrap vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat
+          
+          # Integrate vcpkg with Visual Studio
+          .\vcpkg\vcpkg integrate install
+          
+          # Install MinHook
+          .\vcpkg\vcpkg install minhook:x64-windows
+          
+          # Create necessary directories
           mkdir -p lib -Force
           mkdir -p include -Force
           mkdir -p S2MP-Mod\lib -Force
-
-          # Copy MinHook files to the correct locations
-          Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "lib\libMinHook.x64.lib" -Force
-          Copy-Item "minhook\build\Release\minhook.x64.lib" -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
-          Copy-Item "minhook\include\MinHook.h" -Destination "include\MinHook.h" -Force
-
-          # Now build the project (fix for the error in your command)
-          msbuild /p:Configuration=Release /p:Platform=x64 S2MP-Mod.sln
+          
+          # Copy MinHook libraries and headers to the correct locations
+          $VcpkgRoot = ".\vcpkg\installed\x64-windows"
+          Copy-Item "$VcpkgRoot\lib\minhook.lib" -Destination "lib\libMinHook.x64.lib" -Force
+          Copy-Item "$VcpkgRoot\lib\minhook.lib" -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
+          Copy-Item "$VcpkgRoot\include\MinHook.h" -Destination "include\MinHook.h" -Force
 
       # Step 5: Restore dependencies
       - name: Restore dependencies
