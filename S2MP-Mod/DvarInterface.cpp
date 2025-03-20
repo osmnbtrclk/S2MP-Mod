@@ -1,3 +1,9 @@
+////////////////////////////////////////////
+//          DVar Interface
+// 
+//  Convert DVar strings into enumerated 
+//  DVar strings for S2MP
+////////////////////////////////////////////
 #include "pch.h"
 #include "DvarInterface.hpp"
 #include "Console.h"

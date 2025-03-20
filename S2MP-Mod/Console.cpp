@@ -91,6 +91,7 @@ std::string toHex(uint32_t value) {
 	return ss.str();
 }
 
+//Gonna have to run the commands externally like this for now
 bool execCustomCmd(std::string& cmd) {
 	std::transform(cmd.begin(), cmd.end(), cmd.begin(), GameUtil::asciiToLower);
 	std::vector<std::string> p = Console::parseCmdToVec(cmd);

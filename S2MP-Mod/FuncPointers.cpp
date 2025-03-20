@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "FuncPointers.h"
-//IDA Base: 0x7FF731281000
-//Offset = base + (IDA Addr - IDA Base)
+
 uintptr_t base = (uintptr_t)GetModuleHandle(NULL) + 0x1000;
+
 Functions::SV_SendServerCommand Functions::_SV_SendServerCommand = (Functions::SV_SendServerCommand)(base + 0x7485E0);
 Functions::Com_Error Functions::_Com_Error = (Functions::Com_Error)(base + 0xAA1E0);
 Functions::Scr_MakeGameMessage Functions::_Scr_MakeGameMessage = (Functions::Scr_MakeGameMessage)(base + 0x613230);
@@ -13,4 +13,3 @@ Functions::Dvar_FindVar Functions::_Dvar_FindVar = (Functions::Dvar_FindVar)(bas
 Functions::SEH_SafeTranslateString Functions::_SEH_SafeTranslateString = (Functions::SEH_SafeTranslateString)(base + 0x7934D0);
 Functions::SEH_StringEd_GetString Functions::_SEH_StringEd_GetString = (Functions::SEH_StringEd_GetString)(base + 0x793520);
 Functions::Sys_Quit Functions::_Sys_Quit = (Functions::Sys_Quit)(base + 0x7F0400);
-

@@ -21,8 +21,6 @@ void ExternalConsoleGuiInitWrapper() {
 	ExternalConsoleGui::init(hm, 0, NULL, 1);
 }
 
-//Right now, we can run the dll thru dllmain or use the exported extConInitExported() function
-//__declspec(dllexport)
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpvReserved) {
 	hm = hModule;
 	if (dwReason == DLL_PROCESS_ATTACH) {

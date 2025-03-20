@@ -14,6 +14,4 @@ uintptr_t DebugPatches::base = (uintptr_t)GetModuleHandle(NULL) + 0x1000;
 
 void DebugPatches::init() {
 	Console::initPrint("DebugPatches::init()");
-
-
 }

@@ -57,17 +57,9 @@ void infoPrintOffsets() {
 	Console::infoPrint("s2_mp64_ship BaseOff at: " + addressStr2);
 }
 
-
-
-
 //0 - CLI, 1 - GUI, 2 - BOTH
 void ExtConsole::extConInit(int extConsoleMode) {
 	hProcess = GetCurrentProcess();
-	//------- console setup --------
-
-	//Functions::_SetScreen(1);
-	//Console::execCmd("disconnect");
-
 	if (extConsoleMode >= 1) {
 		//wait for external console gui to be fully ready
 		while (!ExternalConsoleGui::isExtConGuiReady()) {
@@ -92,10 +84,10 @@ void ExtConsole::extConInit(int extConsoleMode) {
 	if (status != MH_OK) {
 		std::string sStatus = MH_StatusToString(status);
 		Console::print("Minhook init failed");
-		//TODO:Add some like error handling here or a global var
+		//TODO: Add some like error handling here or a global var
 	}
 
-	DebugPatches::init();
+	//DebugPatches::init();
 	//PrintPatches::init();
 	DevPatches::init();
 	DvarInterface::init();

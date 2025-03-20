@@ -1,5 +1,8 @@
-//Development Patches
-//temporary patches for testing stuff
+////////////////////////////////////////////
+//          Development Patches
+// 
+//  Temporary patches for testing stuff
+////////////////////////////////////////////
 
 #include "pch.h"
 #include "DevPatches.hpp"
