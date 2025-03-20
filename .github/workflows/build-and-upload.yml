@@ -5,6 +5,7 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   build:
@@ -15,19 +16,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up the environment (if needed)
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      # Step 2: Set up .NET environment
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
         with:
-          node-version: '16'
+          dotnet-version: '6.0'
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: npm install
+      # Step 3: Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
 
-      # Step 4: Build the project
-      - name: Build the project
-        run: npm run build
+      # Step 4: Build the solution
+      - name: Build the solution
+        run: dotnet build --configuration Release
 
       # Step 5: Upload build artifacts
       - name: Upload artifacts
@@ -35,5 +36,4 @@ jobs:
         with:
           name: build-artifacts
           path: |
-            dist/
-            logs/
+            **/bin/Release/
