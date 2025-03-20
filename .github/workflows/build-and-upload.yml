@@ -33,6 +33,7 @@ jobs:
         run: dotnet restore
 
       # Step 5: Build the solution
+      - name: Build the solution
         run: dotnet build --configuration Release
 
       # Step 6: Upload build artifacts
