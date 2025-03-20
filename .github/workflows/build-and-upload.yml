@@ -17,9 +17,11 @@ jobs:
           - Release
           
     steps:
-      # Step 1: Check out the repository
+      # Step 1: Check out the repository with submodules
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          submodules: recursive # Get all submodules recursively
 
       # Step 2: Set up MSBuild directly (faster than installing build tools)
       - name: Add MSBuild to PATH
@@ -31,18 +33,34 @@ jobs:
         with:
           dotnet-version: '6.0'
 
-      # Step 4: Restore dependencies
+      # Step 4: Install or build MinHook dependency
+      - name: Setup MinHook
+        run: |
+          # Clone MinHook if it's not included in the repository
+          if (-not (Test-Path "external\minhook")) {
+            git clone https://github.com/TsudaKageyu/minhook.git external\minhook
+            cd external\minhook
+            # Build MinHook
+            msbuild /m /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 build\VC15\MinHook.sln
+            # Copy lib files to expected location
+            mkdir -p ..\..\lib
+            cp build\VC15\${{ matrix.configuration }}\lib\libMinHook.x64.lib ..\..\lib\
+            cd ..\..
+          }
+
+      # Step 5: Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # Step 5: Build the solution with optimized settings
+      # Step 6: Build the solution with optimized settings
       - name: Build the solution
         run: msbuild /m /p:MultiProcessorCompilation=true /maxcpucount /v:minimal /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 S2MP-Mod.sln
 
-      # Step 6: Upload build artifacts
+      # Step 7: Upload build artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: ${{ matrix.configuration }}-artifacts
           path: |
-            **/bin/Release/
+            **/bin/${{ matrix.configuration }}/
+            **/bin/x64/${{ matrix.configuration }}/
