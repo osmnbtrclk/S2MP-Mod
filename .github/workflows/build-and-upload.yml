@@ -75,8 +75,11 @@ jobs:
           # Display the library path in the project file for debugging
           Get-Content S2MP-Mod\S2MP-Mod.vcxproj | Select-String "libMinHook"
           
-          # Use MSBuild with additional library directories for both the solution and project level
-          msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 /p:AdditionalLibraryDirectories="$PWD\lib" S2MP-Mod.sln /p:LinkLibraryDependencies=true "/p:AdditionalOptions=/LIBPATH:\"$PWD\lib\""
+          # Make sure the library paths are properly quoted
+          $LibPath = """$PWD\lib"""
+          
+          # Use MSBuild with fixed path syntax
+          msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 "/p:AdditionalLibraryDirectories=$LibPath" S2MP-Mod.sln
 
       # Step 7: Upload build artifacts
       - name: Upload artifacts
