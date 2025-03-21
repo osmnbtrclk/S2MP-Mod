@@ -35,6 +35,7 @@ jobs:
 
       # Step 4: Setup vcpkg and install MinHook with improved file finding
       - name: Setup vcpkg and Install MinHook
+        id: setup-minhook
         run: |
           # Create directories
           mkdir -Force lib
@@ -56,6 +57,10 @@ jobs:
 
           Write-Host "MinHook Library Path: $MinHookLibPath"
           Write-Host "MinHook Header Path: $MinHookHeaderPath"
+          
+          # Save paths for later steps
+          "MINHOOK_LIB_PATH=$MinHookLibPath" >> $env:GITHUB_OUTPUT
+          "MINHOOK_HEADER_PATH=$MinHookHeaderPath" >> $env:GITHUB_OUTPUT
 
           # Copy the files
           Copy-Item $MinHookLibPath -Destination "lib\libMinHook.x64.lib" -Force
@@ -106,7 +111,7 @@ jobs:
           }
 
           # Build with explicit library directories
-          msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 /p:AdditionalLibraryDirectories="$LibPath;$ProjectLibPath" S2MP-Mod.sln
+          msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 "/p:AdditionalLibraryDirectories=$LibPath;$ProjectLibPath" S2MP-Mod.sln
           
           # If the build fails, try again with copying library to the expected build location
           if ($LASTEXITCODE -ne 0) {
@@ -116,11 +121,13 @@ jobs:
             $BuildDir = "D:\a\S2MP-Mod\S2MP-Mod\S2MP-Mod"
             if (Test-Path $BuildDir) {
               mkdir -Force "$BuildDir\lib" -ErrorAction SilentlyContinue
-              Copy-Item $MinHookLibPath -Destination "$BuildDir\lib\libMinHook.x64.lib" -Force
+              
+              # Copy from the existing copied libraries
+              Copy-Item "$LibPath\libMinHook.x64.lib" -Destination "$BuildDir\lib\libMinHook.x64.lib" -Force
               Copy-Item "$LibPath\libMinHook.x64.lib" -Destination "$BuildDir\libMinHook.x64.lib" -Force
               
-              # Try building again
-              msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 /p:AdditionalLibraryDirectories="$LibPath;$ProjectLibPath;$BuildDir;$BuildDir\lib" S2MP-Mod.sln
+              # Try building again with updated paths
+              msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 "/p:AdditionalLibraryDirectories=$LibPath;$ProjectLibPath;$BuildDir;$BuildDir\lib" S2MP-Mod.sln
             }
           }
 
@@ -132,3 +139,4 @@ jobs:
           path: |
             **/bin/${{ matrix.configuration }}/
             **/bin/x64/${{ matrix.configuration }}/
+            x64/${{ matrix.configuration }}/
