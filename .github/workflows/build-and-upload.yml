@@ -61,9 +61,14 @@ jobs:
           Copy-Item $MinHookLibPath -Destination "lib\libMinHook.x64.lib" -Force
           Copy-Item $MinHookHeaderPath -Destination "include\MinHook.h" -Force
 
-          # Ensure the library is copied to the correct location
+          # Create a directory structure that matches the build-time path
+          mkdir -Force "S2MP-Mod\lib" -ErrorAction SilentlyContinue
           Copy-Item $MinHookLibPath -Destination "S2MP-Mod\lib\libMinHook.x64.lib" -Force
-
+          
+          # For debugging: List all important locations
+          Write-Host "Workspace directories:"
+          Get-ChildItem -Directory | Format-Table Name
+          
       # Step 5: Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
@@ -80,16 +85,46 @@ jobs:
           # Display the library path in the project file for debugging
           Get-Content S2MP-Mod\S2MP-Mod.vcxproj | Select-String "libMinHook"
           
-          $LibPath = "$PWD\S2MP-Mod\lib"
-          Write-Host "Library Path: $LibPath"
-          if (-not (Test-Path "$LibPath\libMinHook.x64.lib")) {
-            Write-Error "libMinHook.x64.lib not found in $LibPath"
-            exit 1
+          # Prepare the library path
+          $LibPath = "$PWD\lib"
+          $ProjectLibPath = "$PWD\S2MP-Mod\lib"
+          
+          Write-Host "Main Library Path: $LibPath"
+          Write-Host "Project Library Path: $ProjectLibPath"
+          
+          # Verify libraries exist
+          if (Test-Path "$LibPath\libMinHook.x64.lib") {
+            Write-Host "Found libMinHook.x64.lib in main lib directory"
+          } else {
+            Write-Warning "libMinHook.x64.lib not found in $LibPath"
+          }
+          
+          if (Test-Path "$ProjectLibPath\libMinHook.x64.lib") {
+            Write-Host "Found libMinHook.x64.lib in project lib directory"
+          } else {
+            Write-Warning "libMinHook.x64.lib not found in $ProjectLibPath"
           }
 
-          msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 "/p:AdditionalLibraryDirectories=$LibPath" S2MP-Mod.sln
+          # Build with explicit library directories
+          msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 /p:AdditionalLibraryDirectories="$LibPath;$ProjectLibPath" S2MP-Mod.sln
+          
+          # If the build fails, try again with copying library to the expected build location
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "First build attempt failed. Trying with explicit copy to build directory..."
+            
+            # Try to locate where MSBuild is looking for the file
+            $BuildDir = "D:\a\S2MP-Mod\S2MP-Mod\S2MP-Mod"
+            if (Test-Path $BuildDir) {
+              mkdir -Force "$BuildDir\lib" -ErrorAction SilentlyContinue
+              Copy-Item $MinHookLibPath -Destination "$BuildDir\lib\libMinHook.x64.lib" -Force
+              Copy-Item "$LibPath\libMinHook.x64.lib" -Destination "$BuildDir\libMinHook.x64.lib" -Force
+              
+              # Try building again
+              msbuild /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 /p:AdditionalLibraryDirectories="$LibPath;$ProjectLibPath;$BuildDir;$BuildDir\lib" S2MP-Mod.sln
+            }
+          }
 
-      # Step 7: Upload build artifacts
+      # Step 7: Upload artifacts
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
